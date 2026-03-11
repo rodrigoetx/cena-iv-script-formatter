@@ -48,48 +48,71 @@ class ScriptParser:
 class PdfGenerator(FPDF):
     """Template PDF com cabeçalho e rodapé personalizados para a companhia."""
     def header(self):
-        self.set_font('helvetica', 'B', 12)
-        self.cell(0, 10, 'CENA IV SHAKESPEARE CIA. - Roteiro Oficial', align='C', new_x="LMARGIN", new_y="NEXT")
-        self.ln(5)
+        # Apenas coloca cabeçalho se não for a capa (página 1)
+        if self.page_no() > 1:
+            self.set_font('helvetica', 'B', 10)
+            self.set_text_color(120, 120, 120)
+            self.cell(0, 10, 'CENA IV SHAKESPEARE CIA. - Documento de Ensaio', align='C', new_x="LMARGIN", new_y="NEXT")
+            self.line(20, 20, 190, 20)
+            self.ln(5)
 
     def footer(self):
-        self.set_y(-15)
-        self.set_font('helvetica', 'I', 8)
-        self.cell(0, 10, f'Página {self.page_no()} | Developed by Rodrigo Espinosa - Systems Analysis & Development', align='C')
+        # Apenas coloca rodapé se não for a capa
+        if self.page_no() > 1:
+            self.set_y(-15)
+            self.set_font('helvetica', 'I', 8)
+            self.set_text_color(150, 150, 150)
+            self.cell(0, 10, f'Página {self.page_no() - 1} | Developed by Rodrigo Espinosa - Systems Analysis & Development', align='C')
 
 class ScriptFormatter:
     """Recebe os elementos mapeados e desenha no documento FPDF."""
     def __init__(self, elements):
         self.elements = elements
 
-    def build_pdf(self, output_file="roteiro.pdf"):
+    def build_pdf(self, output_file="roteiro.pdf", title="Ensaio Geral"):
         pdf = PdfGenerator()
+        
+        # --- CAPA ---
+        pdf.add_page()
+        pdf.set_font('helvetica', 'B', 28)
+        pdf.set_text_color(40, 40, 40)
+        pdf.ln(90)
+        pdf.cell(0, 15, f'ROTEIRO: {title.upper()}', align='C', new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font('helvetica', 'I', 14)
+        pdf.set_text_color(100, 100, 100)
+        pdf.cell(0, 10, "Cena IV Shakespeare Cia.", align='C', new_x="LMARGIN", new_y="NEXT")
+        
+        # --- PÁGINAS DE CONTEÚDO ---
         pdf.add_page()
         # Margem de segurança de impressão e manuseio rápido
-        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.set_auto_page_break(auto=True, margin=20)
         pdf.set_left_margin(20)
         pdf.set_right_margin(20)
 
         for item in self.elements:
             if item["type"] == "rubrica":
                 pdf.set_font("helvetica", "I", 11)
+                pdf.set_text_color(100, 100, 100) # Cinza suave para a rubrica não ofuscar a fala
                 pdf.set_x(30) # Recuo para diferenciar a rubrica visualmente
                 pdf.multi_cell(0, 6, item["content"], new_x="LMARGIN", new_y="NEXT")
             elif item["type"] == "dialogo":
                 pdf.set_font("helvetica", "B", 13)
-                pdf.cell(0, 6, item["personagem"], new_x="LMARGIN", new_y="NEXT")
+                pdf.set_text_color(0, 0, 0) # Preto solido para o nome
+                pdf.cell(0, 8, item["personagem"], new_x="LMARGIN", new_y="NEXT")
                 
                 pdf.set_font("helvetica", "", 12)
+                pdf.set_text_color(30, 30, 30) # Quase preto para conforto visual
                 pdf.set_x(25) # Recuo de fala para destacar o nome do personagem
                 pdf.multi_cell(0, 6, item["fala"], new_x="LMARGIN", new_y="NEXT")
             else:
                 pdf.set_font("helvetica", "", 11)
+                pdf.set_text_color(0, 0, 0)
                 pdf.multi_cell(0, 6, item["content"], new_x="LMARGIN", new_y="NEXT")
             
-            pdf.ln(3) # Espaçamento confortável para leitura rápida num tablet
+            pdf.ln(4) # Espaçamento confortável para leitura rápida num tablet
 
         pdf.output(output_file)
-        print(f"[{output_file}] criado com sucesso.")
+        print(f"[{output_file}] criado com sucesso com design aprimorado.")
 
 def main():
     print("Iniciando Módulo de Leitura - Formatação Cena IV")

@@ -1,30 +1,26 @@
 # Cena IV Script Formatter 🎭
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FPDF](https://img.shields.io/badge/Library-FPDF2-red?style=for-the-badge)
+Fala galera! Desenvolvi esse motor de formatação de roteiros para ajudar a agilizar nossos processos internos lá na **Cena IV Shakespeare Cia**. 
 
-Um motor de exportação desenvolvido exclusivamente para a **Cena IV Shakespeare Cia.**, com o objetivo de otimizar os processos internos de produção teatral unindo tecnologia da informação e artes cênicas.
+A ideia aqui é testar algumas propostas tecnológicas para o nosso dia a dia no teatro, unindo ferramentas de TI com as nossas artes cênicas.
 
-## Objetivo Estratégico
-Roteiristas e diretores teatrais frequentemente trabalham com textos brutos de edição rápida (em formato TXT). No entanto, fornecer um arquivo sem hierarquia visual para os atores atrasa o ritmo dos ensaios, pois a transição de olhar entre **Falas** e **Rubricas de Palco** precisa ser instantânea.
+## Por que eu fiz isso?
+A gente sabe que ler texto cru (TXT ou Word sem formatação pesada) de roteiro na hora do ensaio é complicado, ainda mais com luz baixa ou dividindo cena. A transição rápida de olhar entre **Falas** e **Ação (Rubrica)** precisa ser nítida pra não quebrar o ritmo.
 
-O *Script Formatter* resolve esse gargalo produtivo: ele analisa hierarquicamente um texto bruto e exporta um arquivo `.pdf` parametrizado, desenhado especialmente para leitura sob baixa luminosidade nas coxias ou em tablets digitais no palco.
+Então criei esse *Script Formatter*: ele pega um texto bruto e gera um `.pdf` super profissional, já com Capa Oficial, margens adequadas para segurar a folha/tablet, nomes em negrito e rubricas em itálico recuadas na cor cinza. Fica muito mais fácil de ler e absorver.
 
-## Características Técnicas
-- **Leitura Orientada a Objetos (OOP):** O sistema isola a lógica de extração sintática (Parser) da lógica de rasterização PDF (Generator), permitindo que a Cia. inclua outros formatos de saída no futuro.
-- **Tipografia Dinâmica:** Nomes em negrito, rubricas em itálico e espaçamento controlado.
-- **Recuo Automático:** Identação natural para rubricas de palco `pdf.set_x(30)` melhorando imediatamente a escaneabilidade dos scripts.
-- **Cabeçalhos Formais:** Todos os documentos gerados mantêm o padrão oficial e profissional da Cena IV.
+## O que vem pela frente?
+Isso é só a fase 1 das minhas propostas. Futuramente, estou pensando em implementar um sistema de **OCR (Reconhecimento Óptico de Caracteres)** com IA. Assim, a gente vai poder tirar foto de um roteiro impresso antigo e o sistema converte direto pro PDF formatadinho!
 
-## Como Executar
-Disponha do ambiente Python e instale a dependência de PDF (`fpdf2`):
+## Como testar
+Se você tem o Python instalado (e a lib `fpdf2`), é só rodar no terminal:
 
 ```bash
 pip install fpdf2
 python script_formatter.py
 ```
 
-O arquivo `ensaio_sample.txt` será processado e o sistema gerará o arquivo formatado em PDF no mesmo diretório.
+Ele vai ler o arquivo de exemplo (`ensaio_sample.txt`) e gerar um arquivo `roteiro_ensaio.pdf` lindão no mesmo momento. Pode testar!
 
 ---
 *Developed by Rodrigo Espinosa - Systems Analysis & Development*
