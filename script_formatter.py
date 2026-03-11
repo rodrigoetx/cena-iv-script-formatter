@@ -65,22 +65,28 @@ class ScriptFormatter:
     def build_pdf(self, output_file="roteiro.pdf"):
         pdf = PdfGenerator()
         pdf.add_page()
+        # Margem de segurança de impressão e manuseio rápido
         pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.set_left_margin(20)
+        pdf.set_right_margin(20)
 
         for item in self.elements:
             if item["type"] == "rubrica":
                 pdf.set_font("helvetica", "I", 11)
+                pdf.set_x(30) # Recuo para diferenciar a rubrica visualmente
                 pdf.multi_cell(0, 6, item["content"], new_x="LMARGIN", new_y="NEXT")
             elif item["type"] == "dialogo":
-                pdf.set_font("helvetica", "B", 12)
+                pdf.set_font("helvetica", "B", 13)
                 pdf.cell(0, 6, item["personagem"], new_x="LMARGIN", new_y="NEXT")
+                
                 pdf.set_font("helvetica", "", 12)
+                pdf.set_x(25) # Recuo de fala para destacar o nome do personagem
                 pdf.multi_cell(0, 6, item["fala"], new_x="LMARGIN", new_y="NEXT")
             else:
                 pdf.set_font("helvetica", "", 11)
                 pdf.multi_cell(0, 6, item["content"], new_x="LMARGIN", new_y="NEXT")
             
-            pdf.ln(2) # Pequeno espaçamento entre as falas
+            pdf.ln(3) # Espaçamento confortável para leitura rápida num tablet
 
         pdf.output(output_file)
         print(f"[{output_file}] criado com sucesso.")
