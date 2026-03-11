@@ -1,4 +1,5 @@
 import os
+from fpdf import FPDF
 
 class ScriptParser:
     """
@@ -44,10 +45,61 @@ class ScriptParser:
     def get_elements(self):
         return self.parsed_elements
 
+class PdfGenerator(FPDF):
+    """Template PDF com cabeçalho e rodapé personalizados para a companhia."""
+    def header(self):
+        self.set_font('helvetica', 'B', 12)
+        self.cell(0, 10, 'CENA IV SHAKESPEARE CIA. - Roteiro Oficial', align='C', new_x="LMARGIN", new_y="NEXT")
+        self.ln(5)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font('helvetica', 'I', 8)
+        self.cell(0, 10, f'Página {self.page_no()} | Developed by Rodrigo Espinosa - Systems Analysis & Development', align='C')
+
+class ScriptFormatter:
+    """Recebe os elementos mapeados e desenha no documento FPDF."""
+    def __init__(self, elements):
+        self.elements = elements
+
+    def build_pdf(self, output_file="roteiro.pdf"):
+        pdf = PdfGenerator()
+        pdf.add_page()
+        pdf.set_auto_page_break(auto=True, margin=15)
+
+        for item in self.elements:
+            if item["type"] == "rubrica":
+                pdf.set_font("helvetica", "I", 11)
+                pdf.multi_cell(0, 6, item["content"], new_x="LMARGIN", new_y="NEXT")
+            elif item["type"] == "dialogo":
+                pdf.set_font("helvetica", "B", 12)
+                pdf.cell(0, 6, item["personagem"], new_x="LMARGIN", new_y="NEXT")
+                pdf.set_font("helvetica", "", 12)
+                pdf.multi_cell(0, 6, item["fala"], new_x="LMARGIN", new_y="NEXT")
+            else:
+                pdf.set_font("helvetica", "", 11)
+                pdf.multi_cell(0, 6, item["content"], new_x="LMARGIN", new_y="NEXT")
+            
+            pdf.ln(2) # Pequeno espaçamento entre as falas
+
+        pdf.output(output_file)
+        print(f"[{output_file}] criado com sucesso.")
+
 def main():
     print("Iniciando Módulo de Leitura - Formatação Cena IV")
-    # Apenas como base de teste para o primeiro commit
-    pass
+    
+    # Gerando um txt de exemplo para consumo do parser
+    sample_text = "(As luzes se apagam. Som de tempestade.)\nMACBETH: Assim seja feito.\n(Macbeth saca a espada)\nBRUXA: Salve, Rei da Escócia!"
+    with open("ensaio_sample.txt", "w", encoding="utf-8") as f:
+        f.write(sample_text)
+
+    # Lógica Central
+    parser = ScriptParser("ensaio_sample.txt")
+    if parser.load_document():
+        parser.process_text()
+        
+        formatter = ScriptFormatter(parser.get_elements())
+        formatter.build_pdf("roteiro_ensaio.pdf")
 
 if __name__ == "__main__":
     main()
